@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#3665f3">
+<title>ORIGAMI Dashboard</title>
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue: #3665f3;
+    --blue-dark: #2851c9;
+    --blue-light: #e8effe;
+    --green: #70c217;
+    --green-dark: #3a7d00;
+    --green-light: #f0fae0;
+    --red: #e53238;
+    --red-light: #fdeced;
+    --orange: #f5af02;
+    --orange-light: #fff8e1;
+    --gray-50: #f7f7f7;
+    --gray-100: #eeeeee;
+    --gray-200: #dddddd;
+    --gray-400: #999999;
+    --gray-600: #555555;
+    --gray-900: #111111;
+    --white: #ffffff;
+    --font: 'IBM Plex Sans JP', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+    --radius: 4px;
+    --radius-lg: 8px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.1);
+    --shadow-md: 0 2px 8px rgba(0,0,0,0.12);
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--gray-50);
+    color: var(--gray-900);
+    font-size: 14px;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .header {
+    background: var(--white);
+    border-bottom: 2px solid var(--blue);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow);
+  }
+
+  .logo {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    color: var(--gray-900);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-badge {
+    background: var(--blue);
+    color: var(--white);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 2px;
+    letter-spacing: 0.5px;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .last-updated {
+    font-size: 12px;
+    color: var(--gray-400);
+    font-family: var(--mono);
+  }
+
+  .refresh-btn {
+    background: var(--blue);
+    color: var(--white);
+    border: none;
+    padding: 6px 14px;
+    border-radius: var(--radius);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: var(--font);
+    transition: background 0.15s;
+  }
+  .refresh-btn:hover { background: var(--blue-dark); }
+
+  /* Main layout */
+  .main { max-width: 1200px; margin: 0 auto; padding: 20px 24px; }
+
+  /* Period tabs */
+  .period-bar {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 20px;
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    overflow: hidden;
+    width: fit-content;
+    box-shadow: var(--shadow);
+  }
+
+  .period-tab {
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--gray-600);
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    border-right: 1px solid var(--gray-200);
+    font-family: var(--font);
+    transition: background 0.1s, color 0.1s;
+  }
+  .period-tab:last-child { border-right: none; }
+  .period-tab:hover { background: var(--gray-50); }
+  .period-tab.active {
+    background: var(--blue);
+    color: var(--white);
+  }
+
+  /* Metric cards */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    padding: 16px 20px;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .card.blue::before { background: var(--blue); }
+  .card.green::before { background: var(--green); }
+  .card.orange::before { background: var(--orange); }
+  .card.red::before { background: var(--red); }
+
+  .card-source {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    color: var(--gray-400);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .card-label {
+    font-size: 13px;
+    color: var(--gray-600);
+    margin-bottom: 8px;
+  }
+
+  .card-value {
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--gray-900);
+    font-family: var(--mono);
+    letter-spacing: -1px;
+    margin-bottom: 6px;
+  }
+
+  .card-diff {
+    font-size: 12px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+  .card-diff.up { color: var(--green-dark); }
+  .card-diff.down { color: var(--red); }
+  .card-diff.neutral { color: var(--gray-400); }
+
+  /* Charts row */
+  .charts-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .panel {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .panel-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .panel-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-900);
+  }
+
+  .panel-sub {
+    font-size: 11px;
+    color: var(--gray-400);
+  }
+
+  .panel-body { padding: 16px 20px; }
+
+  /* Bar chart */
+  .bar-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 120px;
+  }
+
+  .bar-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    gap: 5px;
+    height: 100%;
+    justify-content: flex-end;
+  }
+
+  .bar-fill {
+    width: 100%;
+    background: var(--blue-light);
+    border-radius: 3px 3px 0 0;
+    border: 1px solid #c5d4fb;
+    transition: height 0.4s ease;
+    position: relative;
+    min-height: 4px;
+  }
+
+  .bar-fill.today {
+    background: var(--blue);
+    border-color: var(--blue-dark);
+  }
+
+  .bar-day {
+    font-size: 10px;
+    color: var(--gray-400);
+    font-family: var(--mono);
+  }
+
+  .bar-day.today { color: var(--blue); font-weight: 600; }
+
+  /* Source bars */
+  .source-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .source-item:last-child { border-bottom: none; }
+
+  .source-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .source-name {
+    font-size: 12px;
+    color: var(--gray-900);
+    width: 80px;
+    flex-shrink: 0;
+  }
+
+  .source-track {
+    flex: 1;
+    height: 6px;
+    background: var(--gray-100);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .source-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.5s ease;
+  }
+
+  .source-num {
+    font-size: 12px;
+    font-family: var(--mono);
+    color: var(--gray-600);
+    width: 45px;
+    text-align: right;
+  }
+
+  /* Bottom row */
+  .bottom-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  thead th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--gray-400);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0 0 8px;
+    border-bottom: 1px solid var(--gray-200);
+  }
+
+  thead th:last-child { text-align: right; }
+
+  tbody td {
+    padding: 9px 0;
+    border-bottom: 1px solid var(--gray-100);
+    color: var(--gray-900);
+    vertical-align: middle;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody td:last-child { text-align: right; }
+
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 2px;
+  }
+
+  .badge-ok { background: var(--green-light); color: var(--green-dark); }
+  .badge-low { background: var(--orange-light); color: #a06000; }
+  .badge-out { background: var(--red-light); color: var(--red); }
+  .badge-shipped { background: var(--blue-light); color: var(--blue-dark); }
+  .badge-processing { background: var(--orange-light); color: #a06000; }
+
+  .order-id {
+    color: var(--blue);
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+
+  .amount {
+    font-family: var(--mono);
+    font-weight: 500;
+  }
+
+  /* Footer note */
+  .footnote {
+    text-align: center;
+    font-size: 11px;
+    color: var(--gray-400);
+    margin-top: 20px;
+    padding-bottom: 32px;
+    font-family: var(--mono);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .main { padding: 12px 16px; }
+    .cards { grid-template-columns: repeat(2, 1fr); }
+    .charts-row { grid-template-columns: 1fr; }
+    .bottom-row { grid-template-columns: 1fr; }
+    .header { padding: 0 16px; }
+    .logo { font-size: 16px; }
+  }
+
+  @media (max-width: 480px) {
+    .cards { grid-template-columns: 1fr 1fr; }
+    .card-value { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">
+    ORIGAMI
+    <span class="logo-badge">DASHBOARD</span>
+  </div>
+  <div class="header-right">
+    <span class="last-updated" id="last-updated">--</span>
+    <button class="refresh-btn" onclick="refresh()">↻ 更新</button>
+  </div>
+</header>
+
+<main class="main">
+
+  <div class="period-bar">
+    <button class="period-tab active" onclick="setPeriod(this,'day')">今日</button>
+    <button class="period-tab" onclick="setPeriod(this,'week')">今週</button>
+    <button class="period-tab" onclick="setPeriod(this,'month')">今月</button>
+    <button class="period-tab" onclick="setPeriod(this,'year')">年間</button>
+  </div>
+
+  <div class="cards">
+    <div class="card blue">
+      <div class="card-source">Wix</div>
+      <div class="card-label">売上</div>
+      <div class="card-value" id="wix-sales">¥285</div>
+      <div class="card-diff down" id="wix-diff">▼ 前期比 −12%</div>
+    </div>
+    <div class="card green">
+      <div class="card-source">Square</div>
+      <div class="card-label">売上（実店舗）</div>
+      <div class="card-value" id="sq-sales">¥12,400</div>
+      <div class="card-diff neutral" id="sq-diff">— 実店舗</div>
+    </div>
+    <div class="card orange">
+      <div class="card-source">Wix + Square</div>
+      <div class="card-label">注文数</div>
+      <div class="card-value" id="orders">3</div>
+      <div class="card-diff up" id="orders-diff">▲ 前期比 +8%</div>
+    </div>
+    <div class="card red">
+      <div class="card-source">Wix</div>
+      <div class="card-label">総在庫数</div>
+      <div class="card-value" id="stock">142</div>
+      <div class="card-diff neutral">SKU: 12アイテム</div>
+    </div>
+  </div>
+
+  <div class="charts-row">
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">売上推移（直近7日）</span>
+        <span class="panel-sub" id="chart-range">--</span>
+      </div>
+      <div class="panel-body">
+        <div class="bar-chart" id="bar-chart"></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">アクセス元</span>
+        <span class="panel-sub">過去30日</span>
+      </div>
+      <div class="panel-body" id="source-list"></div>
+    </div>
+  </div>
+
+  <div class="bottom-row">
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">在庫一覧</span>
+        <span class="panel-sub">Wix在庫</span>
+      </div>
+      <div class="panel-body">
+        <table>
+          <thead><tr><th>商品名</th><th>在庫数</th><th>状態</th></tr></thead>
+          <tbody id="stock-table"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">直近の注文</span>
+        <span class="panel-sub">最新4件</span>
+      </div>
+      <div class="panel-body">
+        <table>
+          <thead><tr><th>注文ID</th><th>金額</th><th>状態</th></tr></thead>
+          <tbody id="order-table"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <p class="footnote" id="footnote">※ サンプルデータ表示中 — APIキー設定後にリアルデータへ切替</p>
+
+</main>
+
+<script>
+const periods = {
+  day:   { wix:'¥285', sq:'¥12,400', orders:3,  wixUp:false, wixD:'−12%', ordUp:true,  ordD:'+8%',  bars:[18,32,12,44,28,35,9],   range:'6/1 〜 6/8' },
+  week:  { wix:'¥2,633', sq:'¥87,000', orders:21, wixUp:true,  wixD:'+5%',  ordUp:true,  ordD:'+5%',  bars:[120,85,200,160,190,210,95], range:'5/26 〜 6/8' },
+  month: { wix:'¥37,575', sq:'¥340,000', orders:89, wixUp:false, wixD:'−55%', ordUp:false, ordD:'−10%', bars:[280,310,190,420,380,260,340], range:'5/9 〜 6/8' },
+  year:  { wix:'¥212,156', sq:'¥2,100,000', orders:412, wixUp:true, wixD:'+22%', ordUp:true, ordD:'+18%', bars:[180,220,300,410,380,290,350], range:'2025/6 〜 2026/6' }
+};
+
+const days = ['月','火','水','木','金','土','日'];
+
+const sources = [
+  { name:'Twitter/X', val:2967, color:'#1d9bf0' },
+  { name:'Instagram', val:633,  color:'#e1306c' },
+  { name:'Google',    val:471,  color:'#4285f4' },
+  { name:'TikTok',    val:251,  color:'#000000' },
+  { name:'Facebook',  val:191,  color:'#1877f2' },
+];
+
+const stocks = [
+  { name:'ステアリング A1', qty:24 },
+  { name:'ステアリング B2', qty:8 },
+  { name:'タワーバー FR',   qty:3 },
+  { name:'タワーバー RR',   qty:15 },
+  { name:'ハブリング 4pc',  qty:0 },
+];
+
+const orders = [
+  { id:'#4821', amt:'¥18,500', status:'発送済', shipped:true },
+  { id:'#4820', amt:'¥12,000', status:'処理中', shipped:false },
+  { id:'#4819', amt:'¥9,800',  status:'発送済', shipped:true },
+  { id:'#4818', amt:'¥24,000', status:'発送済', shipped:true },
+];
+
+function setPeriod(btn, key) {
+  document.querySelectorAll('.period-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  const d = periods[key];
+  document.getElementById('wix-sales').textContent = d.wix;
+  document.getElementById('sq-sales').textContent = d.sq;
+  document.getElementById('orders').textContent = d.orders;
+  document.getElementById('chart-range').textContent = d.range;
+
+  const wd = document.getElementById('wix-diff');
+  wd.textContent = (d.wixUp ? '▲' : '▼') + ' 前期比 ' + d.wixD;
+  wd.className = 'card-diff ' + (d.wixUp ? 'up' : 'down');
+
+  const od = document.getElementById('orders-diff');
+  od.textContent = (d.ordUp ? '▲' : '▼') + ' 前期比 ' + d.ordD;
+  od.className = 'card-diff ' + (d.ordUp ? 'up' : 'down');
+
+  renderBars(d.bars);
+}
+
+function renderBars(bars) {
+  const max = Math.max(...bars);
+  document.getElementById('bar-chart').innerHTML = bars.map((v, i) => `
+    <div class="bar-col">
+      <div class="bar-fill${i===6?' today':''}" style="height:${Math.round(v/max*110)}px"></div>
+      <span class="bar-day${i===6?' today':''}">${days[i]}</span>
+    </div>`).join('');
+}
+
+function renderSources() {
+  const max = sources[0].val;
+  document.getElementById('source-list').innerHTML = sources.map(s => `
+    <div class="source-item">
+      <div class="source-dot" style="background:${s.color}"></div>
+      <span class="source-name">${s.name}</span>
+      <div class="source-track"><div class="source-fill" style="width:${Math.round(s.val/max*100)}%;background:${s.color}"></div></div>
+      <span class="source-num">${s.val.toLocaleString()}</span>
+    </div>`).join('');
+}
+
+function renderStock() {
+  document.getElementById('stock-table').innerHTML = stocks.map(s => {
+    const cls = s.qty === 0 ? 'badge-out' : s.qty <= 5 ? 'badge-low' : 'badge-ok';
+    const label = s.qty === 0 ? '在庫切れ' : s.qty <= 5 ? '残りわずか' : '在庫あり';
+    return `<tr>
+      <td>${s.name}</td>
+      <td>${s.qty}</td>
+      <td><span class="badge ${cls}">${label}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderOrders() {
+  document.getElementById('order-table').innerHTML = orders.map(o => `
+    <tr>
+      <td><span class="order-id">${o.id}</span></td>
+      <td><span class="amount">${o.amt}</span></td>
+      <td><span class="badge ${o.shipped ? 'badge-shipped' : 'badge-processing'}">${o.status}</span></td>
+    </tr>`).join('');
+}
+
+function refresh() {
+  document.getElementById('last-updated').textContent = '更新: ' + new Date().toLocaleString('ja-JP', {month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
+}
+
+// Init
+renderBars(periods.day.bars);
+renderSources();
+renderStock();
+renderOrders();
+document.getElementById('chart-range').textContent = periods.day.range;
+refresh();
+</script>
+
+</body>
+</html>
