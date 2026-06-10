@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#0d0d0d">
+<meta name="theme-color" content="#3665f3">
 <title>ORIGAMI Dashboard</title>
 <link rel="manifest" href="manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+JP:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -11,20 +11,23 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg:        #0d0d0d;
-    --bg-2:      #161616;
-    --bg-3:      #1e1e1e;
-    --border:    #2a2a2a;
-    --border-2:  #3a3a3a;
+    --bg:        #f7f7f7;
+    --bg-2:      #ffffff;
+    --bg-3:      #f0f0f0;
+    --border:    #e0e0e0;
+    --border-2:  #cccccc;
+    --blue:      #3665f3;
+    --blue-dark: #2851c9;
+    --blue-light:#e8effe;
     --red:       #e53238;
-    --red-dim:   #7a1a1d;
-    --red-glow:  rgba(229,50,56,0.15);
-    --white:     #f0f0f0;
-    --muted:     #666666;
-    --muted-2:   #444444;
-    --green:     #39a84a;
-    --green-dim: rgba(57,168,74,0.12);
-    --orange:    #f07030;
+    --red-dim:   #fbc9cb;
+    --red-glow:  rgba(229,50,56,0.08);
+    --white:     #111111;
+    --muted:     #767676;
+    --muted-2:   #aaaaaa;
+    --green:     #3a7d00;
+    --green-dim: rgba(57,168,74,0.1);
+    --orange:    #e47911;
     --font:      'Noto Sans JP', sans-serif;
     --mono:      'Roboto Mono', monospace;
     --display:   'Bebas Neue', sans-serif;
@@ -43,7 +46,7 @@
   /* ── Header ── */
   .header {
     background: var(--bg-2);
-    border-bottom: 1px solid var(--border);
+    border-bottom: 2px solid var(--blue);
     padding: 0 24px;
     display: flex;
     align-items: center;
@@ -71,10 +74,10 @@
   .logo-sub {
     font-family: var(--mono);
     font-size: 10px;
-    color: var(--red);
+    color: var(--blue);
     letter-spacing: 2px;
     margin-left: 6px;
-    border-left: 1px solid var(--red-dim);
+    border-left: 1px solid var(--blue-light);
     padding-left: 8px;
     line-height: 1.6;
   }
@@ -93,8 +96,8 @@
 
   .refresh-btn {
     background: transparent;
-    color: var(--red);
-    border: 1px solid var(--red-dim);
+    color: var(--blue);
+    border: 1px solid var(--blue-light);
     padding: 5px 14px;
     border-radius: var(--radius);
     font-size: 11px;
@@ -104,8 +107,8 @@
     transition: background 0.15s, border-color 0.15s;
   }
   .refresh-btn:hover {
-    background: var(--red-glow);
-    border-color: var(--red);
+    background: var(--blue-light);
+    border-color: var(--blue);
   }
 
   /* ── Main ── */
@@ -137,8 +140,8 @@
   .period-tab:last-child { border-right: none; }
   .period-tab:hover { background: var(--bg-3); color: var(--white); }
   .period-tab.active {
-    background: var(--red);
-    color: var(--white);
+    background: var(--blue);
+    color: #ffffff;
   }
 
   /* ── Metric cards ── */
@@ -158,7 +161,7 @@
     position: relative;
   }
 
-  .card.accent { border-top-color: var(--red); }
+  .card.accent { border-top-color: var(--blue); }
   .card.accent-g { border-top-color: var(--green); }
   .card.accent-o { border-top-color: var(--orange); }
   .card.accent-w { border-top-color: #555; }
@@ -212,6 +215,7 @@
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
   }
 
   .panel-header {
@@ -268,7 +272,7 @@
 
   .bar-fill.today {
     background: var(--red);
-    border-color: var(--red);
+    border-color: var(--blue);
   }
 
   .bar-day {
@@ -384,7 +388,7 @@
   /* ── Divider line ── */
   .section-rule {
     height: 1px;
-    background: linear-gradient(to right, var(--red), transparent);
+    background: linear-gradient(to right, var(--blue), transparent);
     margin-bottom: 16px;
   }
 
@@ -511,15 +515,8 @@
 </main>
 
 <script>
-const periods = {
-  day:   { wix:'¥285',     sq:'¥12,400',    orders:3,   wixUp:false, wixD:'−12%', ordUp:true,  ordD:'+8%',  bars:[18,32,12,44,28,35,9],    range:'6/1 〜 6/8' },
-  week:  { wix:'¥2,633',   sq:'¥87,000',    orders:21,  wixUp:true,  wixD:'+5%',  ordUp:true,  ordD:'+5%',  bars:[120,85,200,160,190,210,95], range:'5/26 〜 6/8' },
-  month: { wix:'¥37,575',  sq:'¥340,000',   orders:89,  wixUp:false, wixD:'−55%', ordUp:false, ordD:'−10%', bars:[280,310,190,420,380,260,340], range:'5/9 〜 6/8' },
-  year:  { wix:'¥212,156', sq:'¥2,100,000', orders:412, wixUp:true,  wixD:'+22%', ordUp:true,  ordD:'+18%', bars:[180,220,300,410,380,290,350], range:'2025/6 〜 2026/6' }
-};
-
+const API_URL = 'https://script.google.com/macros/s/AKfycbxlnS9o3c4i2wf7yOxH8UwfIIX_R0DQDaSijWUIzaTAeU-34D2rOsmCGtAmuBKlGviE-w/exec';
 const days = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
-
 const sources = [
   { name:'Twitter/X', val:2967, color:'#e0e0e0' },
   { name:'Instagram', val:633,  color:'#e53238' },
@@ -528,47 +525,72 @@ const sources = [
   { name:'Facebook',  val:191,  color:'#666666' },
 ];
 
-const stocks = [
-  { name:'ステアリング A1', qty:24 },
-  { name:'ステアリング B2', qty:8 },
-  { name:'タワーバー FR',   qty:3 },
-  { name:'タワーバー RR',   qty:15 },
-  { name:'ハブリング 4pc',  qty:0 },
-];
+let liveData = null;
+let currentPeriod = 'day';
 
-const orders = [
-  { id:'#4821', amt:'¥18,500', status:'発送済', shipped:true },
-  { id:'#4820', amt:'¥12,000', status:'処理中', shipped:false },
-  { id:'#4819', amt:'¥9,800',  status:'発送済', shipped:true },
-  { id:'#4818', amt:'¥24,000', status:'発送済', shipped:true },
-];
+// ── データ取得 ──
+async function loadData() {
+  try {
+    document.getElementById('footnote').textContent = '— LOADING LIVE DATA...';
+    const res = await fetch(API_URL);
+    liveData = await res.json();
+    renderAll(currentPeriod);
+    document.getElementById('footnote').textContent = '— LIVE DATA — UPDATED: ' + new Date(liveData.updated).toLocaleString('ja-JP', {month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  } catch(e) {
+    document.getElementById('footnote').textContent = '— DATA FETCH ERROR — SHOWING CACHED DATA';
+    console.error(e);
+  }
+}
 
+// ── 期間切替 ──
 function setPeriod(btn, key) {
   document.querySelectorAll('.period-tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
-  const d = periods[key];
-  document.getElementById('wix-sales').textContent = d.wix;
-  document.getElementById('sq-sales').textContent = d.sq;
-  document.getElementById('orders').textContent = d.orders;
-  document.getElementById('chart-range').textContent = d.range;
-  const wd = document.getElementById('wix-diff');
-  wd.textContent = (d.wixUp ? '▲ ' : '▼ ') + d.wixD;
-  wd.className = 'card-diff ' + (d.wixUp ? 'up' : 'down');
-  const od = document.getElementById('orders-diff');
-  od.textContent = (d.ordUp ? '▲ ' : '▼ ') + d.ordD;
-  od.className = 'card-diff ' + (d.ordUp ? 'up' : 'down');
-  renderBars(d.bars);
+  currentPeriod = key;
+  if (liveData) renderAll(key);
 }
 
+function renderAll(key) {
+  const d = liveData[key];
+  const fmt = v => '¥' + Math.round(v).toLocaleString('ja-JP');
+
+  document.getElementById('wix-sales').textContent = fmt(d.sales);
+  document.getElementById('sq-sales').textContent = '¥0';
+  document.getElementById('orders').textContent = d.count;
+
+  // 在庫合計
+  const totalStock = liveData.inventory.reduce((s, i) => s + Math.max(0, i.qty), 0);
+  document.getElementById('stock').textContent = totalStock;
+
+  // 前期比非表示（データ蓄積後に対応）
+  document.getElementById('wix-diff').textContent = '— Wixオンライン';
+  document.getElementById('wix-diff').className = 'card-diff neutral';
+  document.getElementById('orders-diff').textContent = '— 累計 ' + d.count + '件';
+  document.getElementById('orders-diff').className = 'card-diff neutral';
+
+  // グラフ範囲
+  const dates = liveData.dailyDates;
+  if (dates.length) {
+    document.getElementById('chart-range').textContent =
+      dates[0].slice(5).replace('-','/') + ' 〜 ' + dates[dates.length-1].slice(5).replace('-','/');
+  }
+
+  renderBars(liveData.dailySales);
+  renderStock(liveData.inventory);
+  renderOrders(liveData.recentOrders);
+}
+
+// ── バーグラフ ──
 function renderBars(bars) {
-  const max = Math.max(...bars);
+  const max = Math.max(...bars, 1);
   document.getElementById('bar-chart').innerHTML = bars.map((v, i) => `
     <div class="bar-col">
-      <div class="bar-fill${i===6?' today':''}" style="height:${Math.round(v/max*100)}px"></div>
-      <span class="bar-day${i===6?' today':''}">${days[i]}</span>
+      <div class="bar-fill${i===bars.length-1?' today':''}" style="height:${Math.round(v/max*100)}px"></div>
+      <span class="bar-day${i===bars.length-1?' today':''}">${days[i]}</span>
     </div>`).join('');
 }
 
+// ── アクセス元（固定・Wix APIで取得できないため） ──
 function renderSources() {
   const max = sources[0].val;
   document.getElementById('source-list').innerHTML = sources.map(s => `
@@ -580,32 +602,45 @@ function renderSources() {
     </div>`).join('');
 }
 
-function renderStock() {
-  document.getElementById('stock-table').innerHTML = stocks.map(s => {
-    const cls = s.qty === 0 ? 'badge-out' : s.qty <= 5 ? 'badge-low' : 'badge-ok';
-    const label = s.qty === 0 ? 'OUT' : s.qty <= 5 ? 'LOW' : 'OK';
+// ── 在庫一覧 ──
+function renderStock(inventory) {
+  const items = inventory.filter(i => i.name).slice(0, 8);
+  if (!items.length) {
+    document.getElementById('stock-table').innerHTML = '<tr><td colspan="3" style="color:var(--muted)">データなし</td></tr>';
+    return;
+  }
+  document.getElementById('stock-table').innerHTML = items.map(s => {
+    const cls = s.qty <= 0 ? 'badge-out' : s.qty <= 5 ? 'badge-low' : 'badge-ok';
+    const label = s.qty <= 0 ? 'OUT' : s.qty <= 5 ? 'LOW' : 'OK';
     return `<tr><td>${s.name}</td><td style="font-family:var(--mono)">${s.qty}</td><td><span class="badge ${cls}">${label}</span></td></tr>`;
   }).join('');
 }
 
-function renderOrders() {
-  document.getElementById('order-table').innerHTML = orders.map(o => `
-    <tr>
-      <td><span class="order-id">${o.id}</span></td>
-      <td><span class="amount">${o.amt}</span></td>
-      <td><span class="badge ${o.shipped?'badge-shipped':'badge-processing'}">${o.status}</span></td>
-    </tr>`).join('');
+// ── 直近注文 ──
+function renderOrders(orders) {
+  if (!orders || !orders.length) {
+    document.getElementById('order-table').innerHTML = '<tr><td colspan="3" style="color:var(--muted)">データなし</td></tr>';
+    return;
+  }
+  document.getElementById('order-table').innerHTML = orders.map(o => {
+    const shipped = o.status === 'APPROVED' || o.status === '発送済';
+    const statusLabel = o.status === 'APPROVED' ? '承認済' : o.status;
+    return `<tr>
+      <td><span class="order-id">${o.id.slice(0,8).toUpperCase()}</span></td>
+      <td><span class="amount">¥${Math.round(o.amount).toLocaleString()}</span></td>
+      <td><span class="badge ${shipped?'badge-shipped':'badge-processing'}">${statusLabel}</span></td>
+    </tr>`;
+  }).join('');
 }
 
 function refresh() {
   document.getElementById('last-updated').textContent = new Date().toLocaleString('ja-JP',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  loadData();
 }
 
-renderBars(periods.day.bars);
+// ── 初期化 ──
 renderSources();
-renderStock();
-renderOrders();
-document.getElementById('chart-range').textContent = periods.day.range;
+loadData();
 refresh();
 
 if ('serviceWorker' in navigator) {
