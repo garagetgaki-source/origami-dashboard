@@ -1,4 +1,4 @@
-const CACHE_NAME = 'origami-dashboard-v2';
+const CACHE_NAME = 'origami-dashboard-v4';
 const ASSETS = [
   './index.html',
   './manifest.json',
