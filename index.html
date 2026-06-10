@@ -111,6 +111,25 @@
     border-color: var(--blue);
   }
 
+  .toggle-btn {
+    background: transparent;
+    color: var(--blue);
+    border: 1px solid var(--blue-light);
+    padding: 3px 10px;
+    border-radius: var(--radius);
+    font-size: 10px;
+    font-family: var(--mono);
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.15s;
+  }
+  .toggle-btn:hover { background: var(--blue-light); }
+  .toggle-btn.active {
+    background: var(--blue);
+    color: #ffffff;
+    border-color: var(--blue);
+  }
+
   /* ── Main ── */
   .main { max-width: 1200px; margin: 0 auto; padding: 20px 24px; }
 
@@ -499,12 +518,23 @@
     <div class="panel">
       <div class="panel-header">
         <span class="panel-title">直近の注文</span>
-        <span class="panel-sub">最新4件</span>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="panel-sub">最新4件</span>
+          <button class="toggle-btn" id="product-toggle" onclick="toggleProductView()">
+            ☰ 注文一覧
+          </button>
+        </div>
       </div>
-      <div class="panel-body">
+      <div class="panel-body" id="order-panel-body">
         <table>
           <thead><tr><th>注文ID</th><th>金額</th><th>状態</th></tr></thead>
           <tbody id="order-table"></tbody>
+        </table>
+      </div>
+      <div class="panel-body" id="product-panel-body" style="display:none">
+        <table>
+          <thead><tr><th>商品名</th><th>注文数</th></tr></thead>
+          <tbody id="product-table"></tbody>
         </table>
       </div>
     </div>
@@ -614,6 +644,29 @@ function renderStock(inventory) {
     const label = s.qty <= 0 ? 'OUT' : s.qty <= 5 ? 'LOW' : 'OK';
     return `<tr><td>${s.name}</td><td style="font-family:var(--mono)">${s.qty}</td><td><span class="badge ${cls}">${label}</span></td></tr>`;
   }).join('');
+}
+
+// ── 注文一覧トグル ──
+let productViewActive = false;
+function toggleProductView() {
+  productViewActive = !productViewActive;
+  document.getElementById('order-panel-body').style.display = productViewActive ? 'none' : 'block';
+  document.getElementById('product-panel-body').style.display = productViewActive ? 'block' : 'none';
+  document.getElementById('product-toggle').classList.toggle('active', productViewActive);
+  if (productViewActive && liveData) renderProducts(liveData.productSummary);
+}
+
+// ── 商品別注文数 ──
+function renderProducts(products) {
+  if (!products || !products.length) {
+    document.getElementById('product-table').innerHTML = '<tr><td colspan="2" style="color:var(--muted)">データなし</td></tr>';
+    return;
+  }
+  document.getElementById('product-table').innerHTML = products.map(p => `
+    <tr>
+      <td>${p.name}</td>
+      <td style="font-family:var(--mono);text-align:right">${p.count}件</td>
+    </tr>`).join('');
 }
 
 // ── 直近注文 ──
