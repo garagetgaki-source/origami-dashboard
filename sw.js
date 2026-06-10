@@ -1,4 +1,4 @@
-const CACHE_NAME = 'origami-dashboard-v4';
+const CACHE_NAME = 'origami-dashboard-v5';
 const ASSETS = [
   './index.html',
   './manifest.json',
@@ -22,8 +22,16 @@ self.addEventListener('activate', e => {
   self.clients.claim();
 });
 
+// ネットワーク優先 → 失敗時のみキャッシュにフォールバック
 self.addEventListener('fetch', e => {
   e.respondWith(
-    caches.match(e.request).then(cached => cached || fetch(e.request))
+    fetch(e.request)
+      .then(res => {
+        // 最新をキャッシュに上書き保存
+        const resClone = res.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(e.request, resClone));
+        return res;
+      })
+      .catch(() => caches.match(e.request))
   );
 });
