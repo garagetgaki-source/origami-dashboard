@@ -43,7 +43,6 @@
     min-height: 100vh;
   }
 
-  /* ── Header ── */
   .header {
     background: var(--bg-2);
     border-bottom: 2px solid var(--blue);
@@ -130,10 +129,8 @@
     border-color: var(--blue);
   }
 
-  /* ── Main ── */
   .main { max-width: 1200px; margin: 0 auto; padding: 20px 24px; }
 
-  /* ── Period tabs ── */
   .period-bar {
     display: flex;
     gap: 0;
@@ -163,7 +160,6 @@
     color: #ffffff;
   }
 
-  /* ── Metric cards ── */
   .cards {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -221,7 +217,6 @@
   .card-diff.down { color: var(--red); }
   .card-diff.neutral { color: var(--muted); }
 
-  /* ── Charts row ── */
   .charts-row {
     display: grid;
     grid-template-columns: 2fr 1fr;
@@ -262,7 +257,6 @@
 
   .panel-body { padding: 16px 18px; }
 
-  /* ── Bar chart ── */
   .bar-chart {
     display: flex;
     align-items: flex-end;
@@ -290,8 +284,8 @@
   }
 
   .bar-fill.today {
-    background: var(--red);
-    border-color: var(--blue);
+    background: var(--blue);
+    border-color: var(--blue-dark);
   }
 
   .bar-day {
@@ -299,9 +293,8 @@
     font-size: 9px;
     color: var(--muted);
   }
-  .bar-day.today { color: var(--red); }
+  .bar-day.today { color: var(--blue); font-weight: 600; }
 
-  /* ── Source list ── */
   .source-item {
     display: flex;
     align-items: center;
@@ -346,14 +339,12 @@
     text-align: right;
   }
 
-  /* ── Bottom row ── */
   .bottom-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
   }
 
-  /* ── Tables ── */
   table { width: 100%; border-collapse: collapse; font-size: 12px; }
 
   thead th {
@@ -388,30 +379,26 @@
     border-radius: 2px;
     border: 1px solid transparent;
   }
-  .badge-ok  { border-color: #1e4d24; color: var(--green); background: var(--green-dim); }
-  .badge-low { border-color: #5a3010; color: var(--orange); background: rgba(240,112,48,0.1); }
+  .badge-ok  { border-color: #b7dfb8; color: var(--green); background: var(--green-dim); }
+  .badge-low { border-color: #f5c897; color: var(--orange); background: rgba(228,121,17,0.08); }
   .badge-out { border-color: var(--red-dim); color: var(--red); background: var(--red-glow); }
-  .badge-shipped    { border-color: #1a3050; color: #5090d0; background: rgba(80,144,208,0.1); }
-  .badge-processing { border-color: #5a3010; color: var(--orange); background: rgba(240,112,48,0.1); }
+  .badge-shipped    { border-color: #c5d4fb; color: var(--blue); background: var(--blue-light); }
+  .badge-processing { border-color: #f5c897; color: var(--orange); background: rgba(228,121,17,0.08); }
 
   .order-id {
     font-family: var(--mono);
     font-size: 12px;
-    color: var(--red);
+    color: var(--blue);
   }
 
-  .amount {
-    font-family: var(--mono);
-  }
+  .amount { font-family: var(--mono); }
 
-  /* ── Divider line ── */
   .section-rule {
     height: 1px;
     background: linear-gradient(to right, var(--blue), transparent);
     margin-bottom: 16px;
   }
 
-  /* ── Footer ── */
   .footnote {
     text-align: center;
     font-family: var(--mono);
@@ -422,7 +409,38 @@
     letter-spacing: 0.5px;
   }
 
-  /* ── Responsive ── */
+  /* ── Skeleton loading ── */
+  .skeleton {
+    background: linear-gradient(90deg, var(--bg-3) 25%, var(--border) 50%, var(--bg-3) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+    border-radius: 3px;
+    color: transparent !important;
+    user-select: none;
+  }
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+  .skeleton-value {
+    height: 34px;
+    width: 80%;
+    margin-bottom: 8px;
+  }
+  .skeleton-row {
+    height: 14px;
+    width: 60%;
+  }
+  .skeleton-bar {
+    width: 100%;
+    border-radius: 2px 2px 0 0;
+  }
+  .skeleton-line {
+    height: 12px;
+    margin: 8px 0;
+    border-radius: 3px;
+  }
+
   @media (max-width: 768px) {
     .main { padding: 12px 14px; }
     .cards { grid-template-columns: repeat(2, 1fr); }
@@ -460,26 +478,26 @@
     <div class="card accent">
       <div class="card-source">Wix</div>
       <div class="card-label">売上</div>
-      <div class="card-value" id="wix-sales">¥285</div>
-      <div class="card-diff down" id="wix-diff">▼ −12%</div>
+      <div class="card-value" id="wix-sales"><div class="skeleton skeleton-value"></div></div>
+      <div class="card-diff neutral" id="wix-diff"><div class="skeleton skeleton-row"></div></div>
     </div>
     <div class="card accent-g">
       <div class="card-source">Square</div>
       <div class="card-label">売上（実店舗）</div>
-      <div class="card-value" id="sq-sales">¥12,400</div>
-      <div class="card-diff neutral" id="sq-diff">— 実店舗</div>
+      <div class="card-value" id="sq-sales"><div class="skeleton skeleton-value"></div></div>
+      <div class="card-diff neutral" id="sq-diff"><div class="skeleton skeleton-row"></div></div>
     </div>
     <div class="card accent-o">
       <div class="card-source">Wix + Square</div>
       <div class="card-label">注文数</div>
-      <div class="card-value" id="orders">3</div>
-      <div class="card-diff up" id="orders-diff">▲ +8%</div>
+      <div class="card-value" id="orders"><div class="skeleton skeleton-value"></div></div>
+      <div class="card-diff neutral" id="orders-diff"><div class="skeleton skeleton-row"></div></div>
     </div>
     <div class="card accent-w">
       <div class="card-source">Wix</div>
       <div class="card-label">総在庫数</div>
-      <div class="card-value" id="stock">142</div>
-      <div class="card-diff neutral">SKU: 12</div>
+      <div class="card-value" id="stock"><div class="skeleton skeleton-value"></div></div>
+      <div class="card-diff neutral">在庫追跡アイテム</div>
     </div>
   </div>
 
@@ -490,7 +508,7 @@
         <span class="panel-sub" id="chart-range">--</span>
       </div>
       <div class="panel-body">
-        <div class="bar-chart" id="bar-chart"></div>
+        <div class="bar-chart" id="bar-chart"><div class="bar-col"><div class="skeleton skeleton-bar" style="height:40px"></div><span class="bar-day skeleton" style="width:24px;height:8px;display:block"></span></div><div class="bar-col"><div class="skeleton skeleton-bar" style="height:65px"></div><span class="bar-day skeleton" style="width:24px;height:8px;display:block"></span></div><div class="bar-col"><div class="skeleton skeleton-bar" style="height:30px"></div><span class="bar-day skeleton" style="width:24px;height:8px;display:block"></span></div><div class="bar-col"><div class="skeleton skeleton-bar" style="height:90px"></div><span class="bar-day skeleton" style="width:24px;height:8px;display:block"></span></div><div class="bar-col"><div class="skeleton skeleton-bar" style="height:75px"></div><span class="bar-day skeleton" style="width:24px;height:8px;display:block"></span></div><div class="bar-col"><div class="skeleton skeleton-bar" style="height:55px"></div><span class="bar-day skeleton" style="width:24px;height:8px;display:block"></span></div><div class="bar-col"><div class="skeleton skeleton-bar" style="height:20px"></div><span class="bar-day skeleton" style="width:24px;height:8px;display:block"></span></div></div>
       </div>
     </div>
     <div class="panel">
@@ -511,7 +529,7 @@
       <div class="panel-body">
         <table>
           <thead><tr><th>商品名</th><th>在庫</th><th>状態</th></tr></thead>
-          <tbody id="stock-table"></tbody>
+          <tbody id="stock-table"><tr><td><div class="skeleton skeleton-line"></div></td><td><div class="skeleton skeleton-line" style="width:30px"></div></td><td><div class="skeleton skeleton-line" style="width:40px"></div></td></tr><tr><td><div class="skeleton skeleton-line"></div></td><td><div class="skeleton skeleton-line" style="width:30px"></div></td><td><div class="skeleton skeleton-line" style="width:40px"></div></td></tr><tr><td><div class="skeleton skeleton-line"></div></td><td><div class="skeleton skeleton-line" style="width:30px"></div></td><td><div class="skeleton skeleton-line" style="width:40px"></div></td></tr><tr><td><div class="skeleton skeleton-line"></div></td><td><div class="skeleton skeleton-line" style="width:30px"></div></td><td><div class="skeleton skeleton-line" style="width:40px"></div></td></tr></tbody>
         </table>
       </div>
     </div>
@@ -520,15 +538,13 @@
         <span class="panel-title">直近の注文</span>
         <div style="display:flex;align-items:center;gap:10px">
           <span class="panel-sub">最新4件</span>
-          <button class="toggle-btn" id="product-toggle" onclick="toggleProductView()">
-            ☰ 注文一覧
-          </button>
+          <button class="toggle-btn" id="product-toggle" onclick="toggleProductView()">☰ 注文一覧</button>
         </div>
       </div>
       <div class="panel-body" id="order-panel-body">
         <table>
           <thead><tr><th>注文ID</th><th>金額</th><th>状態</th></tr></thead>
-          <tbody id="order-table"></tbody>
+          <tbody id="order-table"><tr><td><div class="skeleton skeleton-line" style="width:70px"></div></td><td><div class="skeleton skeleton-line" style="width:60px"></div></td><td><div class="skeleton skeleton-line" style="width:50px"></div></td></tr><tr><td><div class="skeleton skeleton-line" style="width:70px"></div></td><td><div class="skeleton skeleton-line" style="width:60px"></div></td><td><div class="skeleton skeleton-line" style="width:50px"></div></td></tr><tr><td><div class="skeleton skeleton-line" style="width:70px"></div></td><td><div class="skeleton skeleton-line" style="width:60px"></div></td><td><div class="skeleton skeleton-line" style="width:50px"></div></td></tr><tr><td><div class="skeleton skeleton-line" style="width:70px"></div></td><td><div class="skeleton skeleton-line" style="width:60px"></div></td><td><div class="skeleton skeleton-line" style="width:50px"></div></td></tr></tbody>
         </table>
       </div>
       <div class="panel-body" id="product-panel-body" style="display:none">
@@ -540,7 +556,7 @@
     </div>
   </div>
 
-  <p class="footnote" id="footnote">※ SAMPLE DATA — CONNECT API TO ENABLE LIVE DATA</p>
+  <p class="footnote" id="footnote">— LOADING...</p>
 
 </main>
 
@@ -548,17 +564,16 @@
 const API_URL = 'https://script.google.com/macros/s/AKfycbxlnS9o3c4i2wf7yOxH8UwfIIX_R0DQDaSijWUIzaTAeU-34D2rOsmCGtAmuBKlGviE-w/exec';
 const days = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
 const sources = [
-  { name:'Twitter/X', val:2967, color:'#e0e0e0' },
-  { name:'Instagram', val:633,  color:'#e53238' },
-  { name:'Google',    val:471,  color:'#aaaaaa' },
-  { name:'TikTok',    val:251,  color:'#888888' },
-  { name:'Facebook',  val:191,  color:'#666666' },
+  { name:'Twitter/X', val:2967, color:'#1d9bf0' },
+  { name:'Instagram', val:633,  color:'#e1306c' },
+  { name:'Google',    val:471,  color:'#4285f4' },
+  { name:'TikTok',    val:251,  color:'#555555' },
+  { name:'Facebook',  val:191,  color:'#1877f2' },
 ];
 
 let liveData = null;
 let currentPeriod = 'day';
 
-// ── データ取得 ──
 async function loadData() {
   try {
     document.getElementById('footnote').textContent = '— LOADING LIVE DATA...';
@@ -567,12 +582,11 @@ async function loadData() {
     renderAll(currentPeriod);
     document.getElementById('footnote').textContent = '— LIVE DATA — UPDATED: ' + new Date(liveData.updated).toLocaleString('ja-JP', {month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
   } catch(e) {
-    document.getElementById('footnote').textContent = '— DATA FETCH ERROR — SHOWING CACHED DATA';
+    document.getElementById('footnote').textContent = '— DATA FETCH ERROR';
     console.error(e);
   }
 }
 
-// ── 期間切替 ──
 function setPeriod(btn, key) {
   document.querySelectorAll('.period-tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
@@ -584,23 +598,17 @@ function renderAll(key) {
   const d = liveData[key];
   const fmt = v => '¥' + Math.round(v).toLocaleString('ja-JP');
 
-  document.getElementById('wix-sales').textContent = fmt(d.sales);
-  document.getElementById('sq-sales').textContent = '¥0';
-  document.getElementById('orders').textContent = d.count;
+  // カード値を直接セット（スケルトン解除）
+  document.getElementById('wix-sales').innerHTML = fmt(d.sales);
+  document.getElementById('sq-sales').innerHTML = '¥0';
+  document.getElementById('orders').innerHTML = d.count;
+  document.getElementById('orders-diff').innerHTML = '— 累計 ' + d.count + '件';
 
-  // 在庫合計
   const totalStock = liveData.inventory.reduce((s, i) => s + Math.max(0, i.qty), 0);
-  document.getElementById('stock').textContent = totalStock;
+  document.getElementById('stock').innerHTML = totalStock;
 
-  // 前期比非表示（データ蓄積後に対応）
-  document.getElementById('wix-diff').textContent = '— Wixオンライン';
-  document.getElementById('wix-diff').className = 'card-diff neutral';
-  document.getElementById('orders-diff').textContent = '— 累計 ' + d.count + '件';
-  document.getElementById('orders-diff').className = 'card-diff neutral';
-
-  // グラフ範囲
   const dates = liveData.dailyDates;
-  if (dates.length) {
+  if (dates && dates.length) {
     document.getElementById('chart-range').textContent =
       dates[0].slice(5).replace('-','/') + ' 〜 ' + dates[dates.length-1].slice(5).replace('-','/');
   }
@@ -610,7 +618,6 @@ function renderAll(key) {
   renderOrders(liveData.recentOrders);
 }
 
-// ── バーグラフ ──
 function renderBars(bars) {
   const max = Math.max(...bars, 1);
   document.getElementById('bar-chart').innerHTML = bars.map((v, i) => `
@@ -620,7 +627,6 @@ function renderBars(bars) {
     </div>`).join('');
 }
 
-// ── アクセス元（固定・Wix APIで取得できないため） ──
 function renderSources() {
   const max = sources[0].val;
   document.getElementById('source-list').innerHTML = sources.map(s => `
@@ -632,7 +638,6 @@ function renderSources() {
     </div>`).join('');
 }
 
-// ── 在庫一覧 ──
 function renderStock(inventory) {
   const items = inventory.filter(i => i.name).slice(0, 8);
   if (!items.length) {
@@ -646,7 +651,6 @@ function renderStock(inventory) {
   }).join('');
 }
 
-// ── 注文一覧トグル ──
 let productViewActive = false;
 function toggleProductView() {
   productViewActive = !productViewActive;
@@ -656,7 +660,6 @@ function toggleProductView() {
   if (productViewActive && liveData) renderProducts(liveData.productSummary);
 }
 
-// ── 商品別注文数 ──
 function renderProducts(products) {
   if (!products || !products.length) {
     document.getElementById('product-table').innerHTML = '<tr><td colspan="2" style="color:var(--muted)">データなし</td></tr>';
@@ -669,7 +672,6 @@ function renderProducts(products) {
     </tr>`).join('');
 }
 
-// ── 直近注文 ──
 function renderOrders(orders) {
   if (!orders || !orders.length) {
     document.getElementById('order-table').innerHTML = '<tr><td colspan="3" style="color:var(--muted)">データなし</td></tr>';
@@ -691,7 +693,6 @@ function refresh() {
   loadData();
 }
 
-// ── 初期化 ──
 renderSources();
 loadData();
 refresh();
