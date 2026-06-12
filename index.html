@@ -603,6 +603,8 @@ function renderAll(key) {
   document.getElementById('sq-sales').innerHTML = '¥0';
   document.getElementById('orders').innerHTML = d.count;
   document.getElementById('orders-diff').innerHTML = '— 累計 ' + d.count + '件';
+  document.getElementById('wix-diff').innerHTML = '— Wixオンライン';
+  document.getElementById('sq-diff').innerHTML = '— 実店舗';
 
   const totalStock = liveData.inventory.reduce((s, i) => s + Math.max(0, i.qty), 0);
   document.getElementById('stock').innerHTML = totalStock;
