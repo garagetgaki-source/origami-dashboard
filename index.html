@@ -557,13 +557,12 @@
   </div>
 
   <p class="footnote" id="footnote">— LOADING...</p>
-  <p class="footnote" style="margin-top:4px">v10</p>
+  <p class="footnote" style="margin-top:4px">v12</p>
 
 </main>
 
 <script>
 const API_URL = 'https://script.google.com/macros/s/AKfycbxlnS9o3c4i2wf7yOxH8UwfIIX_R0DQDaSijWUIzaTAeU-34D2rOsmCGtAmuBKlGviE-w/exec';
-const days = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
 
 let liveData = null;
 let currentPeriod = 'day';
@@ -616,11 +615,18 @@ function renderAll(key) {
 
 function renderBars(bars) {
   const max = Math.max(...bars, 1);
-  document.getElementById('bar-chart').innerHTML = bars.map((v, i) => `
-    <div class="bar-col">
-      <div class="bar-fill${i===bars.length-1?' today':''}" style="height:${Math.round(v/max*100)}px"></div>
-      <span class="bar-day${i===bars.length-1?' today':''}">${days[i]}</span>
-    </div>`).join('');
+  const dayNames = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+  const dates = liveData.dailyDates || [];
+  const todayStr = new Date().toISOString().slice(0, 10);
+  document.getElementById('bar-chart').innerHTML = bars.map((v, i) => {
+    const dateStr = dates[i] || '';
+    const dayLabel = dateStr ? dayNames[new Date(dateStr + 'T00:00:00').getDay()] : '';
+    const isToday = dateStr === todayStr;
+    return `<div class="bar-col">
+      <div class="bar-fill${isToday?' today':''}" style="height:${Math.round(v/max*100)}px"></div>
+      <span class="bar-day${isToday?' today':''}">${dayLabel}</span>
+    </div>`;
+  }).join('');
 }
 
 function renderSources() {
