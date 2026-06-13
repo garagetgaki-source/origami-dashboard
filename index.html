@@ -276,8 +276,8 @@
 
   .bar-fill {
     width: 100%;
-    background: var(--bg-3);
-    border: 1px solid var(--border-2);
+    background: var(--blue-light);
+    border: 1px solid #c5d4fb;
     border-radius: 2px 2px 0 0;
     min-height: 3px;
     transition: height 0.4s ease;
@@ -409,6 +409,29 @@
     letter-spacing: 0.5px;
   }
 
+  /* ── Tooltip ── */
+  .bar-col { position: relative; cursor: pointer; }
+  .bar-tooltip {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--white);
+    color: var(--bg-2);
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 6px 10px;
+    border-radius: var(--radius);
+    white-space: nowrap;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    pointer-events: none;
+    line-height: 1.6;
+  }
+  .bar-col:hover .bar-tooltip,
+  .bar-col:focus .bar-tooltip { display: block; }
+
   /* ── Skeleton loading ── */
   .skeleton {
     background: linear-gradient(90deg, var(--bg-3) 25%, var(--border) 50%, var(--bg-3) 75%);
@@ -511,13 +534,7 @@
         <div class="bar-chart" id="bar-chart"><div class="bar-col"><div class="skeleton skeleton-bar" style="height:40px"></div><span class="bar-day skeleton" style="width:24px;height:8px;display:block"></span></div><div class="bar-col"><div class="skeleton skeleton-bar" style="height:65px"></div><span class="bar-day skeleton" style="width:24px;height:8px;display:block"></span></div><div class="bar-col"><div class="skeleton skeleton-bar" style="height:30px"></div><span class="bar-day skeleton" style="width:24px;height:8px;display:block"></span></div><div class="bar-col"><div class="skeleton skeleton-bar" style="height:90px"></div><span class="bar-day skeleton" style="width:24px;height:8px;display:block"></span></div><div class="bar-col"><div class="skeleton skeleton-bar" style="height:75px"></div><span class="bar-day skeleton" style="width:24px;height:8px;display:block"></span></div><div class="bar-col"><div class="skeleton skeleton-bar" style="height:55px"></div><span class="bar-day skeleton" style="width:24px;height:8px;display:block"></span></div><div class="bar-col"><div class="skeleton skeleton-bar" style="height:20px"></div><span class="bar-day skeleton" style="width:24px;height:8px;display:block"></span></div></div>
       </div>
     </div>
-    <div class="panel">
-      <div class="panel-header">
-        <span class="panel-title">アクセス元</span>
-        <span class="panel-sub">過去30日</span>
-      </div>
-      <div class="panel-body" id="source-list"></div>
-    </div>
+    
   </div>
 
   <div class="bottom-row">
@@ -557,7 +574,7 @@
   </div>
 
   <p class="footnote" id="footnote">— LOADING...</p>
-  <p class="footnote" style="margin-top:4px">v12</p>
+  <p class="footnote" style="margin-top:4px">v13</p>
 
 </main>
 
@@ -617,12 +634,27 @@ function renderBars(bars) {
   const max = Math.max(...bars, 1);
   const dayNames = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
   const dates = liveData.dailyDates || [];
-  const todayStr = new Date().toISOString().slice(0, 10);
+  const jstNow = new Date(Date.now() + 9 * 60 * 60 * 1000);
+  const todayStr = jstNow.toISOString().slice(0, 10);
   document.getElementById('bar-chart').innerHTML = bars.map((v, i) => {
     const dateStr = dates[i] || '';
     const dayLabel = dateStr ? dayNames[new Date(dateStr + 'T00:00:00').getDay()] : '';
     const isToday = dateStr === todayStr;
-    return `<div class="bar-col">
+    // 該当日の商品売上を集計
+    const dayProducts = {};
+    if (liveData.recentOrders) {
+      liveData.recentOrders.forEach(o => {
+        const oDate = (o.date || '').slice(0, 10);
+        if (oDate === dateStr) {
+          const name = o.productName || '商品';
+          dayProducts[name] = (dayProducts[name] || 0) + 1;
+        }
+      });
+    }
+    const productLines = Object.entries(dayProducts).map(([n,c]) => n + ' x' + c).join('\n') || '';
+    const tooltipHtml = `<div class="bar-tooltip">¥${Math.round(v).toLocaleString('ja-JP')}${productLines ? '\n' + productLines : ''}</div>`.replace(/\n/g, '<br>');
+    return `<div class="bar-col" tabindex="0">
+      ${tooltipHtml}
       <div class="bar-fill${isToday?' today':''}" style="height:${Math.round(v/max*100)}px"></div>
       <span class="bar-day${isToday?' today':''}">${dayLabel}</span>
     </div>`;
